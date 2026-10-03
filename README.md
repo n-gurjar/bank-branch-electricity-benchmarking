@@ -2,6 +2,8 @@
 
 Estimating annual electricity use and Scope 2 emissions for a 4,000-branch U.S. bank portfolio where 27% of branches have no meter data and another 20% have only partial-year data.
 
+📊 **[View the presentation (PDF)](docs/presentation.pdf)** · 12 slides: problem, approach, findings, recommendations
+
 > **Data note:** This is a learning case study built on a **synthetic dataset** that simulates a realistic bank branch portfolio (formats, HVAC types, metering arrangements, data gaps). No real company or client data is used.
 
 ## Results
@@ -15,6 +17,8 @@ Estimating annual electricity use and Scope 2 emissions for a 4,000-branch U.S. 
 | Electric-resistance vs. gas-heat rooftop units | **+58%** electricity per sq ft, controlling for size, format, hours, and location |
 | Savings if above-median branches reach format median | **25.6 GWh** (14% of metered use); half from **150 sites** |
 
+![Portfolio electricity](figures/03_portfolio.png)
+
 ## The problem
 
 Branches fall into three data tiers:
@@ -24,6 +28,8 @@ Branches fall into three data tiers:
 | 1 | 2,108 | All 12 months |
 | 2 | 810 | 3–8 consecutive months |
 | 3 | 1,082 | None (landlord-paid or shared, unmetered) |
+
+![Data coverage](figures/01_coverage.png)
 
 A portfolio total that only sums the bills undercounts by about 40%. The job is to fill the gaps with methods that are tested, not assumed.
 
@@ -39,14 +45,31 @@ All data work is in SQL (DuckDB); only the regression is in Python.
 6. **Model tier 3** (`src/model.py`): OLS on log(kWh/sq ft) with format, HVAC, lighting, building age, operating hours, ATMs, drive-thru lanes, floor area, and state. Validated with 5-fold cross-validation.
 7. **Savings potential** (§8): gap between each branch and its format median, ranked to find where savings concentrate.
 
+## Key findings
+
+**Each gap-filling method was tested against branches with known totals before use.**
+
+![Method validation](figures/02_validation.png)
+
+**Electric-resistance heating is the biggest driver of electricity intensity.** This is an electricity-only view: electrically heated branches carry load that gas covers elsewhere. Heat pumps do this efficiently; resistance heat does not.
+
+![HVAC intensity](figures/04_hvac_intensity.png)
+
+**Half the savings potential sits in 150 branches,** 83% of them electrically heated, which makes a clear audit list.
+
+![Savings concentration](figures/05_savings_concentration.png)
+
 ## Repo structure
 
 ```
 data/                     synthetic input CSVs
 sql/analysis.sql          profiling, QC, backtest, annualization, savings (DuckDB)
 src/model.py              regression, cross-validation, portfolio roll-up
-run.py                    runs everything, writes results/summary.txt
+src/figures.py            README charts (matplotlib)
+run.py                    runs everything, writes results/summary.txt and figures/
 results/                  outputs (summary.txt committed; CSVs regenerated)
+figures/                  charts embedded in this README
+docs/                     presentation (PDF for viewing, PPTX source)
 ```
 
 ## Run it

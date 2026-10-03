@@ -22,4 +22,5 @@ if __name__ == "__main__":
     print("\n\n".join(sql_out), "\n")
     from src.model import main as model_main
     model_lines = model_main()
+    import src.figures  # noqa: F401  (writes figures/*.png)
     Path("results/summary.txt").write_text("== SQL ==\n\n" + "\n\n".join(sql_out) + "\n\n" + "\n".join(model_lines) + "\n")
