@@ -1,0 +1,40 @@
+== SQL ==
+
+ branches  states
+     4000      51
+
+ records  fuels
+   50312      5
+
+ data_tier  branches
+         1      2108
+         2       810
+         3      1082
+
+ zero_months  sites  rows_at_solar_sites
+         202     30                202.0
+
+ outliers  drive_thru_only
+       14             11.0
+
+ sites  mdape_linear  mdape_seasonal
+  2047      0.046013        0.020912
+
+ above_median_sites  savings_gwh  pct_of_metered  sites_for_half
+               1054    25.605549        0.141305           150.0
+
+ metered_gwh  annualized_gwh
+  181.207275        63.28238
+
+== Model ==
+R-squared: 0.72
+CV median abs. error: regression 12.3% vs format-median 17.7%
+Electric-resistance RTU vs gas RTU (kWh/sq ft, controlled): +58%
+
+== Portfolio roll-up ==
+Metered (tier 1):        181.2 GWh
+Annualized (tier 2):      63.3 GWh
+Modeled (tier 3):         69.7 GWh
+Total:                   314.2 GWh  (58% metered)
+Scope 2 (location-based, eGRID2022 US avg): 117,306 tCO2
+Note: 12 tier-3 branches have on-site solar; the model estimates their gross use, not net purchases.
